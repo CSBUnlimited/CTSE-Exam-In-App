@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/lectureMenuGroup"
+        android:visible="false">
+        <item
+            android:id="@+id/nav_lec_myExams"
+            android:icon="@drawable/ic_folder_shared_black_24dp"
+            android:title="My Exams"
+            android:checked="true"/>
+        <item
+            android:id="@+id/nav_lec_allExams"
+            android:icon="@drawable/ic_content_copy_black_24dp"
+            android:title="All Exams" />
+    </group>
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/studentMenuGroup"
+        android:visible="true">
+        <item
+            android:id="@+id/nav_stu_allExams"
+            android:icon="@drawable/ic_content_copy_black_24dp"
+            android:title="All Exams"
+            android:checked="true"/>
+
+        <item
+            android:id="@+id/nav_stu_entrolledExams"
+            android:icon="@drawable/ic_content_paste_black_24dp"
+            android:title="Entrolled Exams"
+            android:checked="true"/>
+    </group>
+
+
+</menu>

@@ -76,5 +76,34 @@ namespace CTSE_Exam_In_App.Controllers
 
             return StatusCode(baseResponse.Status, baseResponse);
         }
+
+        [HttpGet("{username},{sessionId}", Name = "GetLoggedInUserByUsernameAndSessionIdAsync")]
+        public async Task<IActionResult> GetLoggedInUserByUsernameAndSessionIdAsync(string username, Guid sessionId)
+        {
+            LoginResponse loginResponse = new LoginResponse();
+
+            try
+            {
+                User user = await _dbContext.Users
+                    .Where(u => u.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase))
+                    .FirstOrDefaultAsync();
+
+                if (user?.SessionId == null || user.SessionId != sessionId)
+                {
+                    throw new Exception("Logged in user session not found");
+                }
+
+                user.UserPassword = null;
+
+                loginResponse.User = user;
+                loginResponse.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                loginResponse.Message = ex.Message;
+            }
+
+            return StatusCode(loginResponse.Status, loginResponse);
+        }
     }
 }
