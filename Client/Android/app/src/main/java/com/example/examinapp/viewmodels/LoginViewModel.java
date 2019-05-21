@@ -3,10 +3,12 @@ package com.example.examinapp.viewmodels;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
 import com.example.examinapp.consts.ExamInApplication;
+import com.example.examinapp.dataaccess.ExamInAppDBHandler;
 import com.example.examinapp.dataaccess.dtos.login.LoginResponse;
 import com.example.examinapp.models.LoadingInformationModel;
 
@@ -14,7 +16,6 @@ public class LoginViewModel extends ViewModel {
 
     private LoadingInformationModel _loadingInformationModel;
     private MutableLiveData<LoadingInformationModel> _loadingInformationModelData = new MutableLiveData<>();
-
 
     public LiveData<LoadingInformationModel> getLoadingInformationModelData() {
         return _loadingInformationModelData;
@@ -25,7 +26,10 @@ public class LoginViewModel extends ViewModel {
         _loadingInformationModelData.setValue(_loadingInformationModel);
     }
 
-    public void login(final String username, final String password) {
+    public void login(Context applicationContext, final String username, final String password) {
+
+        final ExamInAppDBHandler examInAppDBHandle = new ExamInAppDBHandler(applicationContext);
+
         _loadingInformationModel.setIsPending(true);
         _loadingInformationModel.setIsSucess(false);
         _loadingInformationModel.setIsError(false);
@@ -43,6 +47,9 @@ public class LoginViewModel extends ViewModel {
 
                     if (!loginResponse.getIsSuccess()) {
                         _loadingInformationModel.setMessage(loginResponse.getMessage());
+                    }
+                    else {
+                        examInAppDBHandle.newLoggedInUserModel(loginResponse.getUser());
                     }
                 }
                 catch (Exception ex) {
@@ -62,6 +69,5 @@ public class LoginViewModel extends ViewModel {
         });
 
         thread.start();
-
     }
 }

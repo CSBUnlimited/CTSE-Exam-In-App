@@ -2,12 +2,18 @@ package com.example.examinapp.models;
 
 import com.example.examinapp.enums.UserTypeEnum;
 
+import java.util.List;
+
 public class UserModel {
     private int id;
     private String name;
     private String username;
     private String sessionId;
     private int userType;
+
+    private List<ExamModel> ownedExams;
+    private List<StudentExamModel> studentExams;
+    private List<StudentQuestionAnswerModel> studentQuestionAnswers;
 
     public UserModel() {
 
@@ -63,6 +69,30 @@ public class UserModel {
 
     public UserTypeEnum getUserTypeEnum() {
         return (userType == 2) ? UserTypeEnum.Lecturer : UserTypeEnum.Student;
+    }
+
+    public List<ExamModel> getOwnedExams() {
+        return ownedExams;
+    }
+
+    public void setOwnedExams(List<ExamModel> ownedExams) {
+        this.ownedExams = ownedExams;
+    }
+
+    public List<StudentExamModel> getStudentExams() {
+        return studentExams;
+    }
+
+    public void setStudentExams(List<StudentExamModel> studentExams) {
+        this.studentExams = studentExams;
+    }
+
+    public List<StudentQuestionAnswerModel> getStudentQuestionAnswers() {
+        return studentQuestionAnswers;
+    }
+
+    public void setStudentQuestionAnswers(List<StudentQuestionAnswerModel> studentQuestionAnswers) {
+        this.studentQuestionAnswers = studentQuestionAnswers;
     }
 }
 

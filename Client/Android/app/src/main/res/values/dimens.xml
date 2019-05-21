@@ -11,4 +11,7 @@
 
     <dimen name="formButton_textSize">15sp</dimen>
     <dimen name="formButton_padding">10dp</dimen>
+
+    <dimen name="examList_big_textSize">20sp</dimen>
+    <dimen name="examList_small_textSize">15sp</dimen>
 </resources>

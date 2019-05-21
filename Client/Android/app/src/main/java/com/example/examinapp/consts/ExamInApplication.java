@@ -21,21 +21,15 @@ public class ExamInApplication extends Application {
 
     private static MainActivity _mainActivity;
     private static UserModel _loggedInUserModel;
-//
-//    private ExamInApplication() {
-//
-//    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        _examInApplication = this;
     }
 
-    public static ExamInApplication getInstance() {
-        if (_examInApplication == null) {
-            _examInApplication = new ExamInApplication();
-        }
-
+    public static ExamInApplication getCreatedInstance() {
         return _examInApplication;
     }
 

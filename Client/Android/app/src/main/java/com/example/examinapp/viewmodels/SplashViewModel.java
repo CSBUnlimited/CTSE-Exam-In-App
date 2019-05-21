@@ -16,8 +16,6 @@ import com.example.examinapp.models.UserModel;
 
 public class SplashViewModel extends ViewModel {
 
-    private ExamInAppDBHandler _examInAppDBHandle;
-
     private MutableLiveData<Boolean> _isShowLoading = new MutableLiveData<>();
     private MutableLiveData<NextScreenEnum> _nextScreenEnum = new MutableLiveData<>();
 
@@ -34,8 +32,8 @@ public class SplashViewModel extends ViewModel {
         return _nextScreenEnum;
     }
 
-    public void getLoggedInUserData(Context applicationContext) {
-        _examInAppDBHandle = new ExamInAppDBHandler(applicationContext);
+    public void getLoggedInUserData() {
+        final ExamInAppDBHandler examInAppDBHandle = new ExamInAppDBHandler(ExamInApplication.getCreatedInstance().getApplicationContext());
 
         try {
             Thread thread = new Thread(new Runnable() {
@@ -54,7 +52,7 @@ public class SplashViewModel extends ViewModel {
                         }
                     });
 
-                    UserModel userModel = _examInAppDBHandle.getLoggedInUserModel();
+                    UserModel userModel = examInAppDBHandle.getLoggedInUserModel();
                     NextScreenEnum nextScreenEnum = NextScreenEnum.None;
 
                     try {
@@ -71,6 +69,8 @@ public class SplashViewModel extends ViewModel {
                                 else {
                                     nextScreenEnum = NextScreenEnum.MainStudent;
                                 }
+
+                                ExamInApplication.setLoggedInUserModel(examInAppDBHandle.getLoggedInUserModel());
                             }
                         }
                         else {

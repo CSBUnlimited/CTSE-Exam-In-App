@@ -54,6 +54,8 @@ public class LoginActivity extends AppCompatActivity {
                 else if (loadingInformationModel.getIsSucess()) {
                     _progressLoginLinearLayout.setVisibility(View.GONE);
                     _invalidLoginLinearLayout.setVisibility(View.GONE);
+
+                    finish();
                 }
                 else if (loadingInformationModel.getIsError()) {
                     _invalidLoginTextView.setText(loadingInformationModel.getMessage());
@@ -77,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
         _loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _loginViewModel.login(_usernameTextInputEditText.getText().toString(), _passwordTextInputEditText.getText().toString());
+                _loginViewModel.login(LoginActivity.this.getApplicationContext(), _usernameTextInputEditText.getText().toString(), _passwordTextInputEditText.getText().toString());
             }
         });
     }

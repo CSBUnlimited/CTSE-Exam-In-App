@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.example.examinapp.R;
 import com.example.examinapp.enums.NextScreenEnum;
@@ -60,10 +59,14 @@ public class SplashActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if (nextScreenEnum == NextScreenEnum.MainStudent) {
-
+                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
                 else if (nextScreenEnum == NextScreenEnum.MainLecturer) {
-                    showErrorMessageDialog();
+                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
                 else if (nextScreenEnum == NextScreenEnum.SomeThingWentWrong) {
                     showErrorMessageDialog();
@@ -82,7 +85,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                _splashViewModel.getLoggedInUserData(SplashActivity.this.getApplicationContext());
+                _splashViewModel.getLoggedInUserData();
             }
         });
 
@@ -93,6 +96,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        _splashViewModel.getLoggedInUserData(this.getApplicationContext());
+        _splashViewModel.getLoggedInUserData();
     }
 }
