@@ -14,6 +14,8 @@ public class ExamInApplication extends Application {
 
     private static ExamInApplication _examInApplication;
 
+    public static final String EXAM_ID = "ExamInApp_EXAM_ID";
+
     public static final String BASE_URL = "http://10.0.2.2:5000/api/";
     public static final MediaType JSON_HEADER = MediaType.parse("application/json; charset=utf-8");
 

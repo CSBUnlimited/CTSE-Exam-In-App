@@ -2,11 +2,13 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id="@+id/oneExamConstraintLayout">
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/appCompatImageView"
+    <ImageView
+        android:id="@+id/oneExamMainImageView"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginStart="8dp"
@@ -17,16 +19,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+
+    <!--<ImageView-->
+        <!--android:id="@+id/imageView2"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:srcCompat="@drawable/ic_assignment_black_24dp"-->
+        <!--tools:layout_editor_absoluteX="42dp"-->
+        <!--tools:layout_editor_absoluteY="111dp" />-->
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/appCompatImageView"
+        app:layout_constraintStart_toEndOf="@+id/oneExamMainImageView"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/oneExamNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Exam name"
@@ -34,6 +47,7 @@
             android:textColor="@color/colorDark"/>
 
         <TextView
+            android:id="@+id/oneExamDescriptionTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="This exam is about blah blah"

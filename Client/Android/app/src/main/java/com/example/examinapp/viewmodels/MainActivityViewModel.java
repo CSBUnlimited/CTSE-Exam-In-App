@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 
+import com.example.examinapp.adapters.ExamListAdapter;
 import com.example.examinapp.consts.ExamInApplication;
 import com.example.examinapp.dataaccess.ExamInAppDBHandler;
 import com.example.examinapp.enums.NextScreenEnum;
@@ -14,6 +15,8 @@ import com.example.examinapp.models.UserModel;
 public class MainActivityViewModel extends ViewModel {
 
     private MutableLiveData<NextScreenEnum> _nextScreenEnum = new MutableLiveData<>();
+
+    private MutableLiveData<ExamListAdapter> _examListAdapter = new MutableLiveData<>();
 
     private LoadingInformationModel _allExamsLoadingInformationModel;
     private LoadingInformationModel _entrolledExamsLoadingInformationModel;
@@ -41,6 +44,10 @@ public class MainActivityViewModel extends ViewModel {
 
     public LiveData<LoadingInformationModel> getMyAllExamsLoadingInformationModelData() {
         return _myAllExamsLoadingInformationModelData;
+    }
+
+    public LiveData<ExamListAdapter> getExamListAdapter() {
+        return _examListAdapter;
     }
 
     public void init() {

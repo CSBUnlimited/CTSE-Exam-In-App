@@ -21,14 +21,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include
-        android:id="@+id/includeViewMain"
-        layout="@layout/content_main"
-        android:visibility="gone"/>
-    <include
-        android:id="@+id/includeViewMyAllExams"
-        layout="@layout/content_my_all_exams"
-        android:visibility="gone"/>
+    <include layout="@layout/content_main"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

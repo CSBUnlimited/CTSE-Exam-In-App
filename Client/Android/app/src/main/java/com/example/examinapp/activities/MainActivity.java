@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.getMenu().setGroupVisible(R.id.lectureMenuGroup, (userModel.getUserTypeEnum() == UserTypeEnum.Lecturer));
         navigationView.getMenu().setGroupVisible(R.id.studentMenuGroup, (userModel.getUserTypeEnum() == UserTypeEnum.Student));
 
-        View view = findViewById(R.id.includeViewMain);
-        view.setVisibility(View.VISIBLE);
+//        View view = findViewById(R.id.includeViewMain);
+//        view.setVisibility(View.VISIBLE);
 
         _mainActivityViewModel.getNextScreenEnum().observe(this, new Observer<NextScreenEnum>() {
             @Override
