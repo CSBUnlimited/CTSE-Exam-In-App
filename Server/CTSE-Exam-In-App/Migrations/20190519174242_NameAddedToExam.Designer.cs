@@ -3,14 +3,16 @@ using System;
 using CTSE_Exam_In_App.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CTSE_Exam_In_App.Migrations
 {
     [DbContext(typeof(ExamInAppDbContext))]
-    partial class ExamInAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190519174242_NameAddedToExam")]
+    partial class NameAddedToExam
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

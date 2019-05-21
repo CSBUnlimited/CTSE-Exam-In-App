@@ -43,8 +43,8 @@ namespace CTSE_Exam_In_App.Controllers
             return StatusCode(examResponse.Status, examResponse);
         }
 
-        [HttpGet("{isPublished}", Name = "GetAllExamsByIsPublishedAsync")]
-        public async Task<IActionResult> GetAllExamsByIsPublishedAsync(bool isPublished)
+        [HttpGet(Name = "GetAllPublishedExamsAsync")]
+        public async Task<IActionResult> GetAllPublishedExamsAsync()
         {
             ExamResponse examResponse = new ExamResponse();
 
@@ -52,7 +52,7 @@ namespace CTSE_Exam_In_App.Controllers
             {
                 examResponse.Exams = await _dbContext.Exams
                     .Include(e => e.LecturerUser)
-                    .Where(e => e.IsPublish == isPublished)
+                    .Where(e => e.IsPublish && DateTime.Now >= e.EffectiveDateTime && DateTime.Now < e.ExpireDateTime)
                     .ToListAsync();
 
                 examResponse.IsSuccess = true;
@@ -177,6 +177,7 @@ namespace CTSE_Exam_In_App.Controllers
                     throw new Exception("Exam not found");
                 }
 
+                exam.Name = updatedExam.Name;
                 exam.Description = updatedExam.Description;
                 exam.GivenTimeSeconds = updatedExam.GivenTimeSeconds;
                 exam.IsPublish = updatedExam.IsPublish;
