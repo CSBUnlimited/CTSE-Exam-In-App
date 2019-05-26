@@ -3,63 +3,84 @@ package com.example.examinapp.viewmodels;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.example.examinapp.adapters.ExamListAdapter;
 import com.example.examinapp.consts.ExamInApplication;
 import com.example.examinapp.dataaccess.ExamInAppDBHandler;
+import com.example.examinapp.enums.MainActivityViewEnum;
 import com.example.examinapp.enums.NextScreenEnum;
+import com.example.examinapp.models.ExamModel;
 import com.example.examinapp.models.LoadingInformationModel;
 import com.example.examinapp.models.UserModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivityViewModel extends ViewModel {
 
+    private LoadingInformationModel _examsLoadingInformationModel;
+    private List<ExamModel> _exams;
+    private String _searchText;
+
     private MutableLiveData<NextScreenEnum> _nextScreenEnum = new MutableLiveData<>();
+    private MutableLiveData<MainActivityViewEnum> _mainActivityViewEnum = new MutableLiveData<>();
+    private MutableLiveData<String> _examListDescription = new MutableLiveData<>();
+    private MutableLiveData<List<ExamModel>> _examList = new MutableLiveData<>();
 
-    private MutableLiveData<ExamListAdapter> _examListAdapter = new MutableLiveData<>();
+    private void makeExamListAdaper() {
+        final List<ExamModel> exams = new ArrayList<>();
 
-    private LoadingInformationModel _allExamsLoadingInformationModel;
-    private LoadingInformationModel _entrolledExamsLoadingInformationModel;
-    private LoadingInformationModel _myAllExamsLoadingInformationModel;
+        if (_exams != null) {
+            for(int i = 0, size = _exams.size(); i < size; i++) {
+                ExamModel exam = _exams.get(i);
 
-    private MutableLiveData<LoadingInformationModel> _allExamsLoadingInformationModelData = new MutableLiveData<>();
-    private MutableLiveData<LoadingInformationModel> _entrolledExamsLoadingInformationModelData = new MutableLiveData<>();
-    private MutableLiveData<LoadingInformationModel> _myAllExamsLoadingInformationModelData = new MutableLiveData<>();
+                if (exam == null) {
+                    continue;
+                }
 
-    public UserModel getLoggedInUserModel() {
-        return ExamInApplication.getLoggedInUserModel();
+                exams.add(exam);
+            }
+        }
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            public void run() {
+                _examList.setValue(exams);
+            }
+        });
+    }
+
+    public void setSearchText(String searchText) {
+        _searchText = searchText;
+
+        makeExamListAdaper();
     }
 
     public LiveData<NextScreenEnum> getNextScreenEnum() {
         return _nextScreenEnum;
     }
 
-    public LiveData<LoadingInformationModel> getAllExamsLoadingInformationModelData() {
-        return _allExamsLoadingInformationModelData;
+    public LiveData<MainActivityViewEnum> getMainActivityViewEnum() {
+        return _mainActivityViewEnum;
     }
 
-    public LiveData<LoadingInformationModel> getEntrolledExamsLoadingInformationModelData() {
-        return _entrolledExamsLoadingInformationModelData;
+    public LiveData<String> getExamListDescription() {
+        return _examListDescription;
     }
 
-    public LiveData<LoadingInformationModel> getMyAllExamsLoadingInformationModelData() {
-        return _myAllExamsLoadingInformationModelData;
+    public LiveData<List<ExamModel>> getExamList() {
+        return _examList;
     }
 
-    public LiveData<ExamListAdapter> getExamListAdapter() {
-        return _examListAdapter;
+    public UserModel getLoggedInUserModel() {
+        return ExamInApplication.getLoggedInUserModel();
     }
 
     public void init() {
         _nextScreenEnum.setValue(NextScreenEnum.None);
 
-        _allExamsLoadingInformationModel = new LoadingInformationModel(false, false,false, null);
-        _entrolledExamsLoadingInformationModel = new LoadingInformationModel(false, false,false, null);
-        _myAllExamsLoadingInformationModel = new LoadingInformationModel(false, false,false, null);
-
-        _allExamsLoadingInformationModelData.setValue(_allExamsLoadingInformationModel);
-        _entrolledExamsLoadingInformationModelData.setValue(_entrolledExamsLoadingInformationModel);
-        _myAllExamsLoadingInformationModelData.setValue(_myAllExamsLoadingInformationModel);
+        _examsLoadingInformationModel = new LoadingInformationModel(false, false,false, null);
     }
 
     public void logoutLoggedInUser() {
@@ -83,5 +104,25 @@ public class MainActivityViewModel extends ViewModel {
         ExamInApplication.setLoggedInUserModel(null);
 
         _nextScreenEnum.setValue(NextScreenEnum.Splash);
+    }
+
+    public boolean setMainActivityViewEnumAndRequestData(final MainActivityViewEnum mainActivityViewEnum) {
+
+        if (_examsLoadingInformationModel.getIsPending()) {
+            return false;
+        }
+
+        _examsLoadingInformationModel.setIsPending(true);
+        _examsLoadingInformationModel.setIsError(false);
+        _examsLoadingInformationModel.setIsSucess(false);
+        _examsLoadingInformationModel.setMessage("");
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            public void run() {
+                _mainActivityViewEnum.setValue(mainActivityViewEnum);
+            }
+        });
+
+        return true;
     }
 }

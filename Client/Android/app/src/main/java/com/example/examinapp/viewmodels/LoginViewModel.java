@@ -53,7 +53,7 @@ public class LoginViewModel extends ViewModel {
                     }
                 }
                 catch (Exception ex) {
-                    _loadingInformationModel.setMessage(ex.getMessage());
+                    _loadingInformationModel.setMessage("Something went wrong");
                     _loadingInformationModel.setIsSucess(false);
                     _loadingInformationModel.setIsError(true);
                 }

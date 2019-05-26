@@ -77,18 +77,27 @@ public class SplashActivity extends AppCompatActivity {
 
     private void showErrorMessageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("ERROR !!!");
-        builder.setMessage("Something went wrong.\nPlease try again!");
+        builder.setTitle("Cannot connect");
+        builder.setMessage("We cannot connect to ExamIn Servers.\nPlease check your connection and try again!");
 
-        AlertDialog dialog = builder.create();
-        builder.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finishAndRemoveTask();
+            }
+        });
+
+        builder.setPositiveButton("Retry", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
                 dialog.dismiss();
                 _splashViewModel.getLoggedInUserData();
             }
         });
 
+        AlertDialog dialog = builder.create();
         dialog.show();
     }
 

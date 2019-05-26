@@ -3,7 +3,6 @@ package com.example.examinapp.viewmodels;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
