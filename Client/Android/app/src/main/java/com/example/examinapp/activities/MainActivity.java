@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,18 +20,39 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.examinapp.R;
+import com.example.examinapp.adapters.ExamListAdapter;
+import com.example.examinapp.enums.MainActivityViewEnum;
 import com.example.examinapp.enums.NextScreenEnum;
 import com.example.examinapp.enums.UserTypeEnum;
+import com.example.examinapp.models.ExamModel;
+import com.example.examinapp.models.LoadingInformationModel;
 import com.example.examinapp.models.UserModel;
 import com.example.examinapp.viewmodels.MainActivityViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private MainActivityViewModel _mainActivityViewModel;
+
+    private LinearLayout _fetchingExamsProgressLinearLayout;
+    private TextInputEditText _searchExamTextInputEditText;
+    private TextView _noExamsTextView;
+    private ListView _examsListView;
+    private LinearLayout _fetchingExamsErrorLinearLayout;
+    private Button _tryAgainFetchingExamsButton;
+
+    private List<ExamModel> _exams = new ArrayList<>();
+    private LoadingInformationModel _loadingInformationModel;
+    private MainActivityViewEnum _mainActivityViewEnum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +76,20 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+
+
+//        View view = findViewById(R.id.includeViewMain);
+//        view.setVisibility(View.VISIBLE);
+
+        // Get activity controllers
+        _fetchingExamsProgressLinearLayout = findViewById(R.id.fetchingExamsProgressLinearLayout);
+        _examsListView = findViewById(R.id.examsListView);
+        _noExamsTextView = findViewById(R.id.noExamsTextView);
+        _searchExamTextInputEditText = findViewById(R.id.searchExamTextInputEditText);
+        _fetchingExamsErrorLinearLayout = findViewById(R.id.fetchingExamsErrorLinearLayout);
+        _tryAgainFetchingExamsButton = findViewById(R.id.tryAgainFetchingExamsButton);
+
+        // View model controllers
         _mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         _mainActivityViewModel.init();
 
@@ -60,12 +98,20 @@ public class MainActivity extends AppCompatActivity
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.peronNameTextView)).setText(userModel.getName());
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.peronUserTypeTextView)).setText(userModel.getUserTypeEnum().toString());
 
-        navigationView.getMenu().setGroupVisible(R.id.lectureMenuGroup, (userModel.getUserTypeEnum() == UserTypeEnum.Lecturer));
-        navigationView.getMenu().setGroupVisible(R.id.studentMenuGroup, (userModel.getUserTypeEnum() == UserTypeEnum.Student));
+        if (userModel.getUserTypeEnum() == UserTypeEnum.Lecturer) {
+            navigationView.getMenu().setGroupVisible(R.id.lectureMenuGroup, true);
+            navigationView.getMenu().setGroupVisible(R.id.studentMenuGroup, false);
 
-//        View view = findViewById(R.id.includeViewMain);
-//        view.setVisibility(View.VISIBLE);
+            _mainActivityViewEnum = MainActivityViewEnum.LecturerMyExams;
+        }
+        else if (userModel.getUserTypeEnum() == UserTypeEnum.Student) {
+            navigationView.getMenu().setGroupVisible(R.id.lectureMenuGroup, false);
+            navigationView.getMenu().setGroupVisible(R.id.studentMenuGroup, true);
 
+            _mainActivityViewEnum = MainActivityViewEnum.StudentAllExams;
+        }
+
+        // Subscribe to ViewModel call backs
         _mainActivityViewModel.getNextScreenEnum().observe(this, new Observer<NextScreenEnum>() {
             @Override
             public void onChanged(@Nullable NextScreenEnum nextScreenEnum) {
@@ -76,6 +122,86 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+
+        _mainActivityViewModel.getMainActivityViewEnum().observe(this, new Observer<MainActivityViewEnum>() {
+            @Override
+            public void onChanged(@Nullable MainActivityViewEnum mainActivityViewEnum) {
+
+            }
+        });
+
+        _mainActivityViewModel.getExamList().observe(this, new Observer<List<ExamModel>>() {
+            @Override
+            public void onChanged(@Nullable List<ExamModel> examModels) {
+                _exams = examModels;
+                manageShowingExamList();
+            }
+        });
+
+        _mainActivityViewModel.getExamsLoadingInformationModelData().observe(this, new Observer<LoadingInformationModel>() {
+            @Override
+            public void onChanged(@Nullable LoadingInformationModel loadingInformationModel) {
+                _loadingInformationModel = loadingInformationModel;
+                manageShowingExamList();
+            }
+        });
+
+        // Activity controller actions
+        _tryAgainFetchingExamsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _mainActivityViewModel.setMainActivityViewEnumAndRequestData(_mainActivityViewEnum);
+            }
+        });
+
+        _searchExamTextInputEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                _mainActivityViewModel.setSearchText(s.toString());
+            }
+        });
+
+        _mainActivityViewModel.setMainActivityViewEnumAndRequestData(_mainActivityViewEnum);
+    }
+
+    private void manageShowingExamList() {
+        if (_loadingInformationModel == null) {
+            return;
+        }
+
+        _fetchingExamsProgressLinearLayout.setVisibility(View.GONE);
+        _fetchingExamsErrorLinearLayout.setVisibility(View.GONE);
+        _examsListView.setVisibility(View.GONE);
+        _noExamsTextView.setVisibility(View.GONE);
+
+        if (_loadingInformationModel.getIsPending()) {
+            _fetchingExamsProgressLinearLayout.setVisibility(View.VISIBLE);
+        }
+        else {
+            if (_loadingInformationModel.getIsSucess()) {
+                if (_exams.size() > 0) {
+                    ExamListAdapter examListAdapter = new ExamListAdapter(MainActivity.this, _exams);
+                    _examsListView.setAdapter(examListAdapter);
+                    _examsListView.setVisibility(View.VISIBLE);
+                }
+                else {
+                    _noExamsTextView.setVisibility(View.VISIBLE);
+                }
+            }
+            else if (_loadingInformationModel.getIsError()) {
+                _fetchingExamsErrorLinearLayout.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
@@ -116,23 +242,22 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        boolean isChange = true;
 
         if (id == R.id.nav_lec_myExams) {
-
+            _mainActivityViewEnum = MainActivityViewEnum.LecturerMyExams;
         }
         else if (id == R.id.nav_lec_allExams) {
-
+            _mainActivityViewEnum = MainActivityViewEnum.LecturerAllExams;
         }
         else if (id == R.id.nav_stu_allExams) {
-
+            _mainActivityViewEnum = MainActivityViewEnum.StudentAllExams;
         }
         else if (id == R.id.nav_stu_entrolledExams) {
-
+            _mainActivityViewEnum = MainActivityViewEnum.StudentEntrolledExams;
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        return isChange;
+        return _mainActivityViewModel.setMainActivityViewEnumAndRequestData(_mainActivityViewEnum);
     }
 }

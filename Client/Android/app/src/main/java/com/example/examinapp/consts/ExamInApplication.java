@@ -1,11 +1,15 @@
 package com.example.examinapp.consts;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.example.examinapp.activities.MainActivity;
+import com.example.examinapp.configs.DateDeserializer;
 import com.example.examinapp.dataaccess.UnitOfWork;
 import com.example.examinapp.models.UserModel;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.Date;
 
 import okhttp3.MediaType;
 
@@ -49,5 +53,11 @@ public class ExamInApplication extends Application {
 
     public static void setLoggedInUserModel(UserModel loggedInUserModel) {
         _loggedInUserModel = loggedInUserModel;
+    }
+
+    public static Gson getGsonObject() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Date.class, new DateDeserializer());
+        return gsonBuilder.create();
     }
 }

@@ -40,7 +40,7 @@ public class LoginRepository {
 
     public LoginResponse logoutAsync(String username, String sessionId) throws Exception {
 
-        Gson gson = new Gson();
+        Gson gson = ExamInApplication.getGsonObject();
         BaseRequest baseRequest = new BaseRequest(new Date(), username, sessionId);
         String baseRequestString = gson.toJson(baseRequest);
 
@@ -61,7 +61,7 @@ public class LoginRepository {
 
     public LoginResponse getLoggedInUserByUsernameAndSessionIdAsync(String username, String sessionId) throws Exception {
 
-        Gson gson = new Gson();
+        Gson gson = ExamInApplication.getGsonObject();
 
         String url = ExamInApplication.BASE_URL + LOGIN_CONTROLLER_NAME + "GetLoggedInUserByUsernameAndSessionIdAsync/" + username + "," + sessionId;
         OkHttpClient client = new OkHttpClient();
