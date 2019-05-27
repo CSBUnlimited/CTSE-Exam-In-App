@@ -11,7 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.examinapp.R;
+import com.example.examinapp.consts.ExamInApplication;
 import com.example.examinapp.models.ExamModel;
+import com.example.examinapp.models.UserModel;
 
 import java.util.List;
 
@@ -60,7 +62,19 @@ public class ExamListAdapter extends BaseAdapter {
         oneExamConstraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View clickedView) {
-                Toast.makeText(clickedView.getContext(), "test " + examModel.getId(), Toast.LENGTH_LONG).show();
+
+                String test;
+
+                UserModel loggedInUserModel = ExamInApplication.getLoggedInUserModel();
+
+                if (examModel.getLecturerUserId() == loggedInUserModel.getId()) {
+                    test = "admin ";
+                }
+                else {
+                    test = "pumkin ";
+                }
+
+                Toast.makeText(clickedView.getContext(), test + examModel.getId(), Toast.LENGTH_LONG).show();
 
 //                Intent intent = new Intent(_activityContext, NewAlarmActivity.class);
 //                intent.putExtra(AlarmApplication.ALARM_ID, examModel.getId());

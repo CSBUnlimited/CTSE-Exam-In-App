@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity
     private ListView _examsListView;
     private LinearLayout _fetchingExamsErrorLinearLayout;
     private Button _tryAgainFetchingExamsButton;
+    private FloatingActionButton _addNewExamFloatingActionButton;
 
     private List<ExamModel> _exams = new ArrayList<>();
     private LoadingInformationModel _loadingInformationModel;
@@ -88,6 +89,8 @@ public class MainActivity extends AppCompatActivity
         _searchExamTextInputEditText = findViewById(R.id.searchExamTextInputEditText);
         _fetchingExamsErrorLinearLayout = findViewById(R.id.fetchingExamsErrorLinearLayout);
         _tryAgainFetchingExamsButton = findViewById(R.id.tryAgainFetchingExamsButton);
+        _addNewExamFloatingActionButton = findViewById(R.id.addNewExamFloatingActionButton);
+        _addNewExamFloatingActionButton.hide();
 
         // View model controllers
         _mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
@@ -103,12 +106,14 @@ public class MainActivity extends AppCompatActivity
             navigationView.getMenu().setGroupVisible(R.id.studentMenuGroup, false);
 
             _mainActivityViewEnum = MainActivityViewEnum.LecturerMyExams;
+            _addNewExamFloatingActionButton.show();
         }
         else if (userModel.getUserTypeEnum() == UserTypeEnum.Student) {
             navigationView.getMenu().setGroupVisible(R.id.lectureMenuGroup, false);
             navigationView.getMenu().setGroupVisible(R.id.studentMenuGroup, true);
 
             _mainActivityViewEnum = MainActivityViewEnum.StudentAllExams;
+            _addNewExamFloatingActionButton.hide();
         }
 
         // Subscribe to ViewModel call backs
@@ -119,6 +124,10 @@ public class MainActivity extends AppCompatActivity
                     Intent intent = new Intent(MainActivity.this, SplashActivity.class);
                     MainActivity.this.startActivity(intent);
                     finish();
+                }
+                else if (nextScreenEnum == NextScreenEnum.AddNewExam) {
+                    Intent intent = new Intent(MainActivity.this, ManageExamActivity.class);
+                    MainActivity.this.startActivity(intent);
                 }
             }
         });
@@ -156,18 +165,22 @@ public class MainActivity extends AppCompatActivity
 
         _searchExamTextInputEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
                 _mainActivityViewModel.setSearchText(s.toString());
+            }
+        });
+
+        _addNewExamFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View clickedView) {
+//                Toast.makeText(clickedView.getContext(), "new " + "0", Toast.LENGTH_LONG).show();
+                _mainActivityViewModel.navigateToAddNewExam();
             }
         });
 
@@ -210,7 +223,7 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+//            super.onBackPressed();
         }
     }
 

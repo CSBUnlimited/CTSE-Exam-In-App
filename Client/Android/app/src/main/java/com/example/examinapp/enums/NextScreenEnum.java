@@ -6,5 +6,8 @@ public enum NextScreenEnum {
     Login,
     MainStudent,
     MainLecturer,
-    SomeThingWentWrong
+    SomeThingWentWrong,
+    AddNewExam,
+    UpdateExam,
+    OpenExam
 }

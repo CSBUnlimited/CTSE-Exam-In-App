@@ -1,5 +1,6 @@
 package com.example.examinapp.models;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -53,11 +54,11 @@ public class ExamModel {
         this.givenTimeSeconds = givenTimeSeconds;
     }
 
-    public boolean isPublish() {
+    public boolean getIsPublish() {
         return isPublish;
     }
 
-    public void setPublish(boolean publish) {
+    public void setIsPublish(boolean publish) {
         isPublish = publish;
     }
 
@@ -115,5 +116,22 @@ public class ExamModel {
 
     public void setStudentExams(List<StudentExamModel> studentExams) {
         StudentExams = studentExams;
+    }
+
+    public ExamModel() { }
+
+    public ExamModel(int id, String name, String description, int givenTimeSeconds, boolean isPublish, int lecturerUserId) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.givenTimeSeconds = givenTimeSeconds;
+        this.isPublish = isPublish;
+        this.lecturerUserId = lecturerUserId;
+        this.effectiveDateTime = new Date();
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(this.effectiveDateTime);
+        cal.add(Calendar.DATE, 1);
+        this.expireDateTime = cal.getTime();
     }
 }

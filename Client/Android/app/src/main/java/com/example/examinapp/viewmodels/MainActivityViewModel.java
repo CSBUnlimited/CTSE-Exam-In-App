@@ -103,6 +103,10 @@ public class MainActivityViewModel extends ViewModel {
         _examsLoadingInformationModelData.setValue(_examsLoadingInformationModel);
     }
 
+    public void navigateToAddNewExam() {
+        _nextScreenEnum.setValue(NextScreenEnum.AddNewExam);
+    }
+
     public void logoutLoggedInUser() {
         final ExamInAppDBHandler examInAppDBHandle = new ExamInAppDBHandler(ExamInApplication.getCreatedInstance().getApplicationContext());
         final UserModel userModel = getLoggedInUserModel();
