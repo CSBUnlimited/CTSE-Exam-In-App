@@ -7,17 +7,39 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
+import com.example.examinapp.consts.ExamInApplication;
+import com.example.examinapp.dataaccess.dtos.exam.ExamResponse;
+import com.example.examinapp.enums.MainActivityViewEnum;
+import com.example.examinapp.models.ExamModel;
+import com.example.examinapp.models.LoadingInformationModel;
+import com.example.examinapp.models.UserModel;
+
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class ManageExamViewModel extends ViewModel {
+
+    private int _examId;
+    private ExamModel _exam;
+    private UserModel _loggedInUser;
 
     private DatePickerDialog _datePickerDialog;
     private TimePickerDialog _timePickerDialog;
     private Calendar _selectedDateTimeCalendar;
+
+    private LoadingInformationModel _gettingExamInfo;
+    private LoadingInformationModel _savingExamInfo;
+
+    private MutableLiveData<ExamModel> _examModelData = new MutableLiveData<>();
+
+    private MutableLiveData<LoadingInformationModel> _gettingExamInfoData = new MutableLiveData<>();
+    private MutableLiveData<LoadingInformationModel> _savingExamInfoData = new MutableLiveData<>();
 
     private DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -40,10 +62,6 @@ public class ManageExamViewModel extends ViewModel {
 
     private MutableLiveData<Date> _selectedDateTimeData;
 
-    public void init() {
-
-    }
-
     public LiveData<Date> pickDateTime(Context activityContext, final Date initialDate) {
         _selectedDateTimeData = new MutableLiveData<>();
 
@@ -65,5 +83,144 @@ public class ManageExamViewModel extends ViewModel {
         _datePickerDialog.show();
 
         return _selectedDateTimeData;
+    }
+
+    public void init(int examId) {
+        _examId = examId;
+
+        _loggedInUser = ExamInApplication.getLoggedInUserModel();
+        _savingExamInfo = new LoadingInformationModel(false, false, false, "");
+        _gettingExamInfo = new LoadingInformationModel(false, false, false, "");
+
+        initializeExamData();
+    }
+
+    public LiveData<LoadingInformationModel> getGettingExamInfoData() {
+        return _gettingExamInfoData;
+    }
+
+    public LiveData<LoadingInformationModel> getSavingExamInfoData() {
+        return _savingExamInfoData;
+    }
+
+    public LiveData<ExamModel> getExamModelData() {
+        return _examModelData;
+    }
+
+    public ExamModel getExamModel() {
+        return _exam;
+    }
+
+    public void setExamModelName(String name) {
+        _exam.setName(name);
+        _examModelData.setValue(_exam);
+    }
+
+    public void setExamModelDescription(String description) {
+        _exam.setDescription(description);
+        _examModelData.setValue(_exam);
+    }
+
+    public void setExamModelGivenTimeMinutes(int givenMinutes) {
+        _exam.setGivenTimeSeconds(givenMinutes * 60);
+        _examModelData.setValue(_exam);
+    }
+
+    public void setExamModelEffectiveDateTime(Date effectiveDateTime) {
+        _exam.setEffectiveDateTime(effectiveDateTime);
+        _examModelData.setValue(_exam);
+    }
+
+    public void setExamModelExpireDateTime(Date expireDateTime) {
+        _exam.setExpireDateTime(expireDateTime);
+        _examModelData.setValue(_exam);
+    }
+
+    public void setExamModelIsPublish(boolean isPublish) {
+        _exam.setIsPublish(isPublish);
+        _examModelData.setValue(_exam);
+    }
+
+    public void initializeExamData() {
+
+        _gettingExamInfo.setIsPending(true);
+        _gettingExamInfo.setIsSucess(false);
+        _gettingExamInfo.setIsError(false);
+        _gettingExamInfo.setMessage("");
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            public void run() {
+                _gettingExamInfoData.setValue(_gettingExamInfo);
+            }
+        });
+
+        if (_examId == 0) {
+            _exam = new ExamModel(0, "", "", 0, false, _loggedInUser.getId());
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                public void run() {
+                    _examModelData.setValue(_exam);
+                }
+            });
+
+            _gettingExamInfo.setIsPending(false);
+            _gettingExamInfo.setIsSucess(true);
+            _gettingExamInfo.setIsError(false);
+            _gettingExamInfo.setMessage("");
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                public void run() {
+                    _gettingExamInfoData.setValue(_gettingExamInfo);
+                }
+            });
+        }
+        else {
+            Thread thread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        ExamResponse examResponse = ExamInApplication.UNIT_OF_WORK.getExamRepository().getExamNoQuestionsByIdAsync(_examId);
+
+                        _gettingExamInfo.setIsSucess(examResponse.getIsSuccess());
+                        _gettingExamInfo.setIsError(!examResponse.getIsSuccess());
+
+                        if (!examResponse.getIsSuccess()) {
+                            _gettingExamInfo.setMessage(examResponse.getMessage());
+                        } else {
+                            List<ExamModel> exams = examResponse.getExams();
+
+                            if (exams == null || exams.get(0) == null) {
+                                _gettingExamInfo.setIsSucess(false);
+                                _gettingExamInfo.setIsError(true);
+                                _gettingExamInfo.setMessage("Exam you searching is not found");
+                            } else {
+                                _exam = exams.get(0);
+
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    public void run() {
+                                        _examModelData.setValue(_exam);
+                                    }
+                                });
+                            }
+                        }
+                    } catch (Exception ex) {
+                        _gettingExamInfo.setIsSucess(false);
+                        _gettingExamInfo.setIsError(true);
+                        _gettingExamInfo.setMessage("Something went wrong");
+                    }
+
+                    _gettingExamInfo.setIsPending(false);
+
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            _gettingExamInfoData.setValue(_gettingExamInfo);
+                        }
+                    });
+                }
+            });
+
+            thread.start();
+        }
     }
 }

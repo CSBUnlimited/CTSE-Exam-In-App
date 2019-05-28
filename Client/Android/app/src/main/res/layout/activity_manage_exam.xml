@@ -6,7 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".activities.ManageExamActivity">
 
+    <LinearLayout
+        android:id="@+id/gettingExamDataProgressLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            style="android:attr/progressBarStyle"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="@dimen/default_padding" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Getting exam data" />
+
+    </LinearLayout>
+
     <ScrollView
+        android:id="@+id/manageExamScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/default_padding">
@@ -14,8 +43,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <!-- Name -->
             <android.support.design.widget.TextInputLayout
@@ -27,10 +56,10 @@
                     android:id="@+id/manageExamNameTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="30"
+                    android:hint="Name"
                     android:inputType="textCapWords"
-                    android:maxLines="1"
-                    android:hint="Name" />
+                    android:maxLength="30"
+                    android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -44,8 +73,8 @@
                     android:id="@+id/manageExamDescriptionTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="500"
-                    android:hint="Description" />
+                    android:hint="Description"
+                    android:maxLength="500" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -59,9 +88,9 @@
                     android:id="@+id/manageExamGivenTimeTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="4"
+                    android:hint="Given Time (minutes)"
                     android:inputType="number"
-                    android:hint="Given Time (minutes)" />
+                    android:maxLength="4" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -70,26 +99,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:columnCount="10"
-                android:rowCount="2"
-                >
+                android:rowCount="2">
 
                 <!-- Effective Date -->
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/default_padding"
-                    android:layout_column="0"
                     android:layout_row="0"
-                    android:layout_columnWeight="9">
+                    android:layout_column="0"
+                    android:layout_columnWeight="9"
+                    android:layout_marginTop="@dimen/default_padding">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/manageExamEffectiveDateTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="false"
+                        android:hint="Effective Date"
                         android:inputType="text"
-                        android:maxLines="1"
-                        android:hint="Effective Date" />
+                        android:maxLines="1" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -98,29 +126,29 @@
                     style="@style/SuccessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/default_padding"
-                    android:text="Set"
                     android:layout_row="0"
                     android:layout_column="9"
-                    android:gravity="center"/>
+                    android:layout_marginTop="@dimen/default_padding"
+                    android:gravity="center"
+                    android:text="Set" />
 
                 <!-- Expire Date -->
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/default_padding"
-                    android:layout_column="0"
                     android:layout_row="1"
-                    android:layout_columnWeight="9">
+                    android:layout_column="0"
+                    android:layout_columnWeight="9"
+                    android:layout_marginTop="@dimen/default_padding">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/manageExamExpireDateTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="false"
+                        android:hint="Expire Date"
                         android:inputType="text"
-                        android:maxLines="1"
-                        android:hint="Expire Date" />
+                        android:maxLines="1" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -129,11 +157,11 @@
                     style="@style/SuccessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/default_padding"
-                    android:text="Set"
                     android:layout_row="1"
                     android:layout_column="9"
-                    android:gravity="center"/>
+                    android:layout_marginTop="@dimen/default_padding"
+                    android:gravity="center"
+                    android:text="Set" />
 
             </GridLayout>
 
@@ -147,10 +175,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
+                    android:layout_marginStart="@dimen/default_padding"
                     android:text="Is Published"
                     android:textAlignment="textStart"
                     android:textSize="@dimen/normal_textSize"
-                    android:layout_marginStart="@dimen/default_padding"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -203,8 +231,8 @@
                     style="@style/WarningButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="@dimen/default_padding"
                     android:layout_marginStart="@dimen/default_padding"
+                    android:layout_marginEnd="@dimen/default_padding"
                     android:text="Update"
                     app:layout_constraintEnd_toEndOf="parent" />
 

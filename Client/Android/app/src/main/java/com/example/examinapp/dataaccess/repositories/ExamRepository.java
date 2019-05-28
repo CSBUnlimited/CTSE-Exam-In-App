@@ -1,14 +1,10 @@
 package com.example.examinapp.dataaccess.repositories;
 
-import com.example.examinapp.configs.DateDeserializer;
 import com.example.examinapp.consts.ExamInApplication;
 import com.example.examinapp.dataaccess.dtos.base.BaseRequest;
 import com.example.examinapp.dataaccess.dtos.exam.ExamRequest;
 import com.example.examinapp.dataaccess.dtos.exam.ExamResponse;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.util.Date;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -74,6 +70,23 @@ public class ExamRepository {
         Gson gson = ExamInApplication.getGsonObject();
 
         String url = ExamInApplication.BASE_URL + EXAM_CONTROLLER_NAME + "GetExamByIdAsync/" + id;
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        return gson.fromJson(response.body().string(), ExamResponse.class);
+    }
+
+    public ExamResponse getExamNoQuestionsByIdAsync(int id) throws Exception {
+
+        Gson gson = ExamInApplication.getGsonObject();
+
+        String url = ExamInApplication.BASE_URL + EXAM_CONTROLLER_NAME + "GetExamNoQuestionsByIdAsync/" + id;
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
