@@ -18,7 +18,6 @@ import com.example.examinapp.R;
 import com.example.examinapp.consts.ExamInApplication;
 import com.example.examinapp.models.ExamModel;
 import com.example.examinapp.models.LoadingInformationModel;
-import com.example.examinapp.models.UserModel;
 import com.example.examinapp.viewmodels.ManageExamViewModel;
 
 import java.text.DateFormat;
@@ -26,7 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ManageExamActivity extends AppCompatActivity {
-    private UserModel _user;
 
     private ManageExamViewModel _manageExamViewModel;
 
@@ -84,7 +82,6 @@ public class ManageExamActivity extends AppCompatActivity {
         _updatingExamDataProgressLinearLayout.setVisibility(View.GONE);
 
         // Get required data
-        _user = ExamInApplication.getLoggedInUserModel();
 
         int examId = getIntent().getIntExtra(ExamInApplication.EXAM_ID, 0);
 
