@@ -13,8 +13,10 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import com.example.examinapp.consts.ExamInApplication;
+import com.example.examinapp.dataaccess.dtos.base.BaseRequest;
+import com.example.examinapp.dataaccess.dtos.base.BaseResponse;
+import com.example.examinapp.dataaccess.dtos.exam.ExamRequest;
 import com.example.examinapp.dataaccess.dtos.exam.ExamResponse;
-import com.example.examinapp.enums.MainActivityViewEnum;
 import com.example.examinapp.models.ExamModel;
 import com.example.examinapp.models.LoadingInformationModel;
 import com.example.examinapp.models.UserModel;
@@ -40,6 +42,8 @@ public class ManageExamViewModel extends ViewModel {
 
     private MutableLiveData<LoadingInformationModel> _gettingExamInfoData = new MutableLiveData<>();
     private MutableLiveData<LoadingInformationModel> _savingExamInfoData = new MutableLiveData<>();
+
+    private MutableLiveData<String> _toastMessage = new MutableLiveData<>();
 
     private DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -85,6 +89,10 @@ public class ManageExamViewModel extends ViewModel {
         return _selectedDateTimeData;
     }
 
+    public LiveData<String> getToastMessage() {
+        return _toastMessage;
+    }
+
     public void init(int examId) {
         _examId = examId;
 
@@ -113,31 +121,29 @@ public class ManageExamViewModel extends ViewModel {
 
     public void setExamModelName(String name) {
         _exam.setName(name);
-        _examModelData.setValue(_exam);
     }
 
     public void setExamModelDescription(String description) {
         _exam.setDescription(description);
-        _examModelData.setValue(_exam);
     }
 
     public void setExamModelGivenTimeMinutes(int givenMinutes) {
         _exam.setGivenTimeSeconds(givenMinutes * 60);
-        _examModelData.setValue(_exam);
     }
 
     public void setExamModelEffectiveDateTime(Date effectiveDateTime) {
         _exam.setEffectiveDateTime(effectiveDateTime);
-        _examModelData.setValue(_exam);
     }
 
     public void setExamModelExpireDateTime(Date expireDateTime) {
         _exam.setExpireDateTime(expireDateTime);
-        _examModelData.setValue(_exam);
     }
 
     public void setExamModelIsPublish(boolean isPublish) {
         _exam.setIsPublish(isPublish);
+    }
+
+    public void setExamToExamModelData() {
         _examModelData.setValue(_exam);
     }
 
@@ -222,5 +228,154 @@ public class ManageExamViewModel extends ViewModel {
 
             thread.start();
         }
+    }
+
+    public void saveUpdateExam() {
+
+        if (_exam.getName().trim().equals("")) {
+            _toastMessage.setValue("Exam name is required");
+            return;
+        }
+
+        if (_exam.getDescription().trim().equals("")) {
+            _toastMessage.setValue("Exam description is required");
+            return;
+        }
+
+        if (_exam.getEffectiveDateTime().getTime() >= _exam.getExpireDateTime().getTime()) {
+            _toastMessage.setValue("Expire date time should larger than effective date time");
+            return;
+        }
+
+        if (_exam.getGivenTimeSeconds() <= 0) {
+            _toastMessage.setValue("Exam given time should be larger than zero");
+            return;
+        }
+
+        _savingExamInfo.setIsPending(true);
+        _savingExamInfo.setIsSucess(false);
+        _savingExamInfo.setIsError(false);
+        _savingExamInfo.setMessage("");
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            public void run() {
+                _savingExamInfoData.setValue(_savingExamInfo);
+            }
+        });
+
+        _exam.setLecturerUserId(_loggedInUser.getId());
+
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+
+                    ExamRequest examRequest = new ExamRequest(new Date(), _loggedInUser.getUsername(), _loggedInUser.getSessionId(), _exam);
+                    ExamResponse examResponse;
+
+                    if (_exam.getId() > 0) {
+                        examResponse = ExamInApplication.UNIT_OF_WORK.getExamRepository().updateExamAsync(examRequest);
+                    }
+                    else {
+                        examResponse = ExamInApplication.UNIT_OF_WORK.getExamRepository().addExamAsync(examRequest);
+                    }
+
+                    _savingExamInfo.setIsSucess(examResponse.getIsSuccess());
+                    _savingExamInfo.setIsError(!examResponse.getIsSuccess());
+
+                    if (!examResponse.getIsSuccess()) {
+                        _savingExamInfo.setMessage(examResponse.getMessage());
+                    } else {
+                        List<ExamModel> exams = examResponse.getExams();
+
+                        if (exams == null || exams.get(0) == null) {
+                            _savingExamInfo.setIsSucess(false);
+                            _savingExamInfo.setIsError(true);
+                            _savingExamInfo.setMessage("Something went wrong");
+                        } else {
+
+                            _savingExamInfo.setMessage(_exam.getId() == 0 ? "Exam added successfully" : "Exam updated successfully");
+
+                            _exam = exams.get(0);
+
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                public void run() {
+                                    _examModelData.setValue(_exam);
+                                }
+                            });
+
+                        }
+                    }
+                } catch (Exception ex) {
+                    _savingExamInfo.setIsSucess(false);
+                    _savingExamInfo.setIsError(true);
+                    _savingExamInfo.setMessage("Something went wrong");
+                }
+
+                _savingExamInfo.setIsPending(false);
+
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        _savingExamInfoData.setValue(_savingExamInfo);
+                    }
+                });
+            }
+        });
+
+        thread.start();
+    }
+
+    public void deleteExam() {
+
+        _savingExamInfo.setIsPending(true);
+        _savingExamInfo.setIsSucess(false);
+        _savingExamInfo.setIsError(false);
+        _savingExamInfo.setMessage("");
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            public void run() {
+                _savingExamInfoData.setValue(_savingExamInfo);
+            }
+        });
+
+        _exam.setLecturerUserId(_loggedInUser.getId());
+
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+
+                    BaseRequest baseRequest = new BaseRequest(new Date(), _loggedInUser.getUsername(), _loggedInUser.getSessionId());
+                    BaseResponse baseResponse = ExamInApplication.UNIT_OF_WORK.getExamRepository().deleteExamByIdAsync(_exam.getId(), baseRequest);;
+
+                    _savingExamInfo.setIsSucess(baseResponse.getIsSuccess());
+                    _savingExamInfo.setIsError(!baseResponse.getIsSuccess());
+
+                    if (!baseResponse.getIsSuccess()) {
+                        _savingExamInfo.setMessage(baseResponse.getMessage());
+                    } else {
+                        _exam = null;
+                        _savingExamInfo.setMessage("Exam deleted");
+                    }
+                } catch (Exception ex) {
+                    _savingExamInfo.setIsSucess(false);
+                    _savingExamInfo.setIsError(true);
+                    _savingExamInfo.setMessage("Something went wrong");
+                }
+
+                _savingExamInfo.setIsPending(false);
+
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        _savingExamInfoData.setValue(_savingExamInfo);
+                        _examModelData.setValue(_exam);
+                    }
+                });
+            }
+        });
+
+        thread.start();
     }
 }

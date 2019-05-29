@@ -183,8 +183,6 @@ public class MainActivity extends AppCompatActivity
                 _mainActivityViewModel.navigateToAddNewExam();
             }
         });
-
-        _mainActivityViewModel.setMainActivityViewEnumAndRequestData(_mainActivityViewEnum);
     }
 
     private void manageShowingExamList() {
@@ -272,5 +270,12 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return _mainActivityViewModel.setMainActivityViewEnumAndRequestData(_mainActivityViewEnum);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        _mainActivityViewModel.setMainActivityViewEnumAndRequestData(_mainActivityViewEnum);
     }
 }

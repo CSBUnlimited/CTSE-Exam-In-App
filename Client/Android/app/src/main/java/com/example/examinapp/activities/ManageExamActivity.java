@@ -47,7 +47,10 @@ public class ManageExamActivity extends AppCompatActivity {
     private Button _manageExamDeleteButton;
 
     private ScrollView _manageExamScrollView;
+
     private LinearLayout _gettingExamDataProgressLinearLayout;
+    private LinearLayout _savingExamDataProgressLinearLayout;
+    private LinearLayout _updatingExamDataProgressLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +75,13 @@ public class ManageExamActivity extends AppCompatActivity {
 
         _manageExamScrollView = findViewById(R.id.manageExamScrollView);
         _manageExamScrollView.setVisibility(View.GONE);
+
         _gettingExamDataProgressLinearLayout = findViewById(R.id.gettingExamDataProgressLinearLayout);
         _gettingExamDataProgressLinearLayout.setVisibility(View.GONE);
+        _savingExamDataProgressLinearLayout = findViewById(R.id.savingExamDataProgressLinearLayout);
+        _savingExamDataProgressLinearLayout.setVisibility(View.GONE);
+        _updatingExamDataProgressLinearLayout = findViewById(R.id.updatingExamDataProgressLinearLayout);
+        _updatingExamDataProgressLinearLayout.setVisibility(View.GONE);
 
         // Get required data
         _user = ExamInApplication.getLoggedInUserModel();
@@ -88,15 +96,30 @@ public class ManageExamActivity extends AppCompatActivity {
         _manageExamViewModel.getExamModelData().observe(this, new Observer<ExamModel>() {
             @Override
             public void onChanged(@Nullable ExamModel examModel) {
+
+                if (examModel == null) {
+                    finish();
+                    return;
+                }
+
                 _manageExamNameTextInputEditText.setText(examModel.getName());
                 _manageExamDescriptionTextInputEditText.setText(examModel.getDescription());
                 _manageExamGivenTimeTextInputEditText.setText(String.valueOf(examModel.getGivenTimeSeconds() / 60));
 
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
                 _manageExamEffectiveDateTextInputEditText.setText(dateFormat.format(examModel.getEffectiveDateTime()));
                 _manageExamExpireDateTextInputEditText.setText(dateFormat.format(examModel.getExpireDateTime()));
                 _manageExamPublishSwitch.setChecked(examModel.getIsPublish());
+
+                if (examModel.getId() > 0) {
+                    _manageExamAddNewConstraintLayout.setVisibility(View.GONE);
+                    _manageExamUpdateConstraintLayout.setVisibility(View.VISIBLE);
+                }
+                else {
+                    _manageExamAddNewConstraintLayout.setVisibility(View.VISIBLE);
+                    _manageExamUpdateConstraintLayout.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -121,7 +144,45 @@ public class ManageExamActivity extends AppCompatActivity {
         _manageExamViewModel.getSavingExamInfoData().observe(this, new Observer<LoadingInformationModel>() {
             @Override
             public void onChanged(@Nullable LoadingInformationModel loadingInformationModel) {
+                if (loadingInformationModel.getIsPending()) {
+                    _manageExamNameTextInputEditText.setEnabled(false);
+                    _manageExamDescriptionTextInputEditText.setEnabled(false);
+                    _manageExamGivenTimeTextInputEditText.setEnabled(false);
+                    _manageExamEffectiveDateSetButton.setEnabled(false);
+                    _manageExamExpireDateSetButton.setEnabled(false);
+                    _manageExamPublishSwitch.setEnabled(false);
 
+                    _manageExamSaveButton.setEnabled(false);
+                    _manageExamUpdateButton.setEnabled(false);
+                    _manageExamDeleteButton.setEnabled(false);
+
+                    _savingExamDataProgressLinearLayout.setVisibility(View.VISIBLE);
+                    _updatingExamDataProgressLinearLayout.setVisibility(View.VISIBLE);
+                }
+                else {
+                    _manageExamNameTextInputEditText.setEnabled(true);
+                    _manageExamDescriptionTextInputEditText.setEnabled(true);
+                    _manageExamGivenTimeTextInputEditText.setEnabled(true);
+                    _manageExamEffectiveDateSetButton.setEnabled(true);
+                    _manageExamExpireDateSetButton.setEnabled(true);
+                    _manageExamPublishSwitch.setEnabled(true);
+
+                    _manageExamSaveButton.setEnabled(true);
+                    _manageExamUpdateButton.setEnabled(true);
+                    _manageExamDeleteButton.setEnabled(true);
+
+                    _savingExamDataProgressLinearLayout.setVisibility(View.GONE);
+                    _updatingExamDataProgressLinearLayout.setVisibility(View.GONE);
+
+                    Toast.makeText(ManageExamActivity.this, loadingInformationModel.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        _manageExamViewModel.getToastMessage().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String message) {
+                Toast.makeText(ManageExamActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -134,6 +195,7 @@ public class ManageExamActivity extends AppCompatActivity {
                     public void onChanged(@Nullable Date date) {
 //                        Toast.makeText(ManageExamActivity.this, "new " + date.toString(), Toast.LENGTH_LONG).show();
                         _manageExamViewModel.setExamModelEffectiveDateTime(date);
+                        _manageExamViewModel.setExamToExamModelData();
                     }
                 });
             }
@@ -146,6 +208,7 @@ public class ManageExamActivity extends AppCompatActivity {
                     @Override
                     public void onChanged(@Nullable Date date) {
                         _manageExamViewModel.setExamModelExpireDateTime(date);
+                        _manageExamViewModel.setExamToExamModelData();
                     }
                 });
             }
@@ -154,21 +217,23 @@ public class ManageExamActivity extends AppCompatActivity {
         _manageExamSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                syncExamViewModelWithViewData();
+                _manageExamViewModel.saveUpdateExam();
             }
         });
 
         _manageExamUpdateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                syncExamViewModelWithViewData();
+                _manageExamViewModel.saveUpdateExam();
             }
         });
 
         _manageExamDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                _manageExamViewModel.deleteExam();
             }
         });
     }
@@ -176,5 +241,14 @@ public class ManageExamActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    public void syncExamViewModelWithViewData() {
+        _manageExamViewModel.setExamModelName(_manageExamNameTextInputEditText.getText().toString());
+        _manageExamViewModel.setExamModelDescription(_manageExamDescriptionTextInputEditText.getText().toString());
+        _manageExamViewModel.setExamModelGivenTimeMinutes(Integer.parseInt(_manageExamGivenTimeTextInputEditText.getText().toString()));
+        _manageExamViewModel.setExamModelIsPublish(_manageExamPublishSwitch.isChecked());
+
+        _manageExamViewModel.setExamToExamModelData();
     }
 }

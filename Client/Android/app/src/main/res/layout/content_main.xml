@@ -77,6 +77,7 @@
         android:id="@+id/fetchingExamsErrorLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:layout_marginStart="@dimen/default_padding"
         android:layout_marginTop="@dimen/default_padding"
         android:layout_marginEnd="@dimen/default_padding"
@@ -110,9 +111,11 @@
 
     <ListView
         android:id="@+id/examsListView"
+        android:textFilterEnabled="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:visibility="gone"
+        android:layout_marginTop="75dp"
         android:layout_marginStart="@dimen/default_padding"
         android:layout_marginEnd="@dimen/default_padding"
         app:layout_constraintEnd_toEndOf="parent"
