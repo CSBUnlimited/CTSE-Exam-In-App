@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.addQuestionFloatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity
                     finish();
                 }
                 else if (nextScreenEnum == NextScreenEnum.AddNewExam) {
-                    Intent intent = new Intent(MainActivity.this, ManageExamActivity.class);
+                    Intent intent = new Intent(MainActivity.this, LecturerManageExamActivity.class);
                     MainActivity.this.startActivity(intent);
                 }
             }

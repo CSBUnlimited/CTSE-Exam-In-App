@@ -25,7 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class ManageExamViewModel extends ViewModel {
+public class LecturerManageExamViewModel extends ViewModel {
 
     private int _examId;
     private ExamModel _exam;
@@ -369,8 +369,8 @@ public class ManageExamViewModel extends ViewModel {
 
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     public void run() {
-                        _savingExamInfoData.setValue(_savingExamInfo);
                         _examModelData.setValue(_exam);
+                        _savingExamInfoData.setValue(_savingExamInfo);
                     }
                 });
             }

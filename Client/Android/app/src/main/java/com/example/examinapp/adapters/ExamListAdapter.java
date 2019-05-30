@@ -1,6 +1,7 @@
 package com.example.examinapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.examinapp.R;
+import com.example.examinapp.activities.LecturerExamActivity;
 import com.example.examinapp.consts.ExamInApplication;
+import com.example.examinapp.enums.UserTypeEnum;
 import com.example.examinapp.models.ExamModel;
 import com.example.examinapp.models.UserModel;
 
@@ -68,17 +71,22 @@ public class ExamListAdapter extends BaseAdapter {
                 UserModel loggedInUserModel = ExamInApplication.getLoggedInUserModel();
 
                 if (examModel.getLecturerUserId() == loggedInUserModel.getId()) {
-                    test = "admin ";
+                    Intent intent = new Intent(_activityContext, LecturerExamActivity.class);
+                    intent.putExtra(ExamInApplication.EXAM_ID, examModel.getId());
+                    _activityContext.startActivity(intent);
                 }
                 else {
-                    test = "pumkin ";
+
+                    if (loggedInUserModel.getUserTypeEnum() == UserTypeEnum.Lecturer) {
+                        test = "lecturer ";
+                    }
+                    else {
+                        test = "pumkin ";
+                    }
+
+                    Toast.makeText(clickedView.getContext(), test + examModel.getId(), Toast.LENGTH_LONG).show();
                 }
 
-                Toast.makeText(clickedView.getContext(), test + examModel.getId(), Toast.LENGTH_LONG).show();
-
-//                Intent intent = new Intent(_activityContext, NewAlarmActivity.class);
-//                intent.putExtra(AlarmApplication.ALARM_ID, examModel.getId());
-//                _activityContext.startActivity(intent);
             }
         });
 

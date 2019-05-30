@@ -9,5 +9,6 @@ public enum NextScreenEnum {
     SomeThingWentWrong,
     AddNewExam,
     UpdateExam,
-    OpenExam
+    OpenExam,
+    AddQuestion
 }
