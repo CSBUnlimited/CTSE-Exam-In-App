@@ -49,7 +49,7 @@ public class QuestionRepository {
         return gson.fromJson(response.body().string(), QuestionResponse.class);
     }
 
-    public QuestionResponse addExamAsync(QuestionRequest questionRequest) throws Exception {
+    public QuestionResponse addQuestionAsync(QuestionRequest questionRequest) throws Exception {
 
         Gson gson = ExamInApplication.getGsonObject();
         String examRequestString = gson.toJson(questionRequest);
@@ -69,7 +69,7 @@ public class QuestionRepository {
         return gson.fromJson(response.body().string(), QuestionResponse.class);
     }
 
-    public QuestionResponse updateExamAsync(QuestionRequest examRequest) throws Exception {
+    public QuestionResponse updateQuestionAsync(QuestionRequest examRequest) throws Exception {
 
         Gson gson = ExamInApplication.getGsonObject();
         String examRequestString = gson.toJson(examRequest);
@@ -89,7 +89,7 @@ public class QuestionRepository {
         return gson.fromJson(response.body().string(), QuestionResponse.class);
     }
 
-    public QuestionResponse deleteExamByIdAsync(int examId, BaseRequest baseRequest) throws Exception {
+    public QuestionResponse deleteQuestionByIdAsync(int examId, BaseRequest baseRequest) throws Exception {
 
         Gson gson = ExamInApplication.getGsonObject();
         String baseRequestString = gson.toJson(baseRequest);

@@ -15,6 +15,24 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.ExamActivity"
+            android:label="@string/title_activity_exam"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.examinapp.activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.QuestionActivity"
+            android:label="@string/title_activity_question"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.examinapp.activities.MainActivity" />
+        </activity>
+        <activity
             android:name=".activities.LecturerManageExamActivity"
             android:label="@string/title_activity_lecturer_manage_exam"
             android:parentActivityName=".activities.MainActivity"

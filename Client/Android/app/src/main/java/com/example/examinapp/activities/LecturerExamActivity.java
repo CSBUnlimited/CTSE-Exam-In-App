@@ -174,7 +174,9 @@ public class LecturerExamActivity extends AppCompatActivity {
         addQuestionFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(LecturerExamActivity.this, QuestionActivity.class);
+                intent.putExtra(ExamInApplication.EXAM_ID, lecturerExamViewModel.getExam().getId());
+                LecturerExamActivity.this.startActivity(intent);
             }
         });
 

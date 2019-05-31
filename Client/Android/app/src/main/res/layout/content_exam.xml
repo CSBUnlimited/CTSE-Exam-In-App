@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activities.ExamActivity"
+    tools:showIn="@layout/activity_exam">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/nonLecturerExamDataConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="125dp"
+            android:paddingVertical="@dimen/default_padding"
+            android:background="@color/colorMajorDark"
+            app:layout_constraintEnd_toEndOf="@+id/nonLecturerExamDataConstraintLayout"
+            app:layout_constraintStart_toStartOf="@+id/nonLecturerExamDataConstraintLayout"
+            app:layout_constraintTop_toTopOf="@+id/nonLecturerExamDataConstraintLayout">
+
+            <LinearLayout
+                android:id="@+id/examDetailsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/default_padding">
+
+                <TextView
+                    android:id="@+id/nonLecturerExamNameTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/default_padding"
+                    android:text="..."
+                    android:textAlignment="center"
+                    android:textColor="@color/colorLight"
+                    android:textSize="@dimen/examList_big_textSize"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/nonLecturerExamDescriptionTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/default_padding"
+                    android:text="..."
+                    android:textAlignment="center"
+                    android:textColor="@color/colorLight"
+                    android:textSize="@dimen/examList_small_textSize" />
+
+                <TextView
+                    android:id="@+id/nonLecturerExamLecturerNameTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="..."
+                    android:textAlignment="center"
+                    android:textColor="@color/colorLight"
+                    android:textSize="@dimen/examList_small_textSize" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/examDetailsTabContentConstraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="130dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp">
+
+            <ListView
+                android:id="@+id/examDetailsListView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="@+id/examDetailsTabContentConstraintLayout"
+                app:layout_constraintEnd_toEndOf="@+id/examDetailsTabContentConstraintLayout"
+                app:layout_constraintStart_toStartOf="@+id/examDetailsTabContentConstraintLayout"
+                app:layout_constraintTop_toTopOf="@+id/examDetailsTabContentConstraintLayout">
+
+            </ListView>
+
+            <TextView
+                android:id="@+id/noDataToShowExamLecturerTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_padding"
+                android:layout_marginTop="@dimen/default_padding"
+                android:text="No data to show..."
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/examDetailsTabContentConstraintLayout" />
+
+
+        </android.support.constraint.ConstraintLayout>
+
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

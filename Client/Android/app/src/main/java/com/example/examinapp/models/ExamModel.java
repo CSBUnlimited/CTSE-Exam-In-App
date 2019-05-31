@@ -19,8 +19,8 @@ public class ExamModel {
     private int lecturerUserId;
     private UserModel lecturerUser;
 
-    private List<QuestionModel> Questions;
-    private List<StudentExamModel> StudentExams;
+    private List<QuestionModel> questions;
+    private List<StudentExamModel> studentExams;
 
     public int getId() {
         return id;
@@ -103,19 +103,19 @@ public class ExamModel {
     }
 
     public List<QuestionModel> getQuestions() {
-        return Questions;
+        return questions;
     }
 
     public void setQuestions(List<QuestionModel> questions) {
-        Questions = questions;
+        this.questions = questions;
     }
 
     public List<StudentExamModel> getStudentExams() {
-        return StudentExams;
+        return studentExams;
     }
 
     public void setStudentExams(List<StudentExamModel> studentExams) {
-        StudentExams = studentExams;
+        this.studentExams = studentExams;
     }
 
     public ExamModel() { }

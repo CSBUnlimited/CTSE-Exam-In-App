@@ -86,14 +86,14 @@ public class QuestionListAdapter extends BaseAdapter {
                 if (loggedInUserModel.getUserTypeEnum() == UserTypeEnum.Lecturer) {
 
                     if (_examOwnerId == loggedInUserModel.getId()) {
-                        test = "owner";
+                        test = "Owner";
                     }
                     else {
-                        test = "lecture";
+                        test = "Lecturer";
                     }
                 }
                 else {
-                    test = "pumkin ";
+                    test = "Student";
                 }
 
                 Toast.makeText(clickedView.getContext(), test + questionModel.getId(), Toast.LENGTH_LONG).show();

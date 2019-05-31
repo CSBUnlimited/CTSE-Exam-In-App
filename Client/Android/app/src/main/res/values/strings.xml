@@ -24,4 +24,6 @@
     <string name="login_failed">"Login failed"</string>
     <string name="title_activity_lecturer_exam">Exam Details</string>
     <string name="title_activity_lecturer_manage_exam">Manage Exam</string>
+    <string name="title_activity_question">Add Question</string>
+    <string name="title_activity_exam">Exam Details</string>
 </resources>

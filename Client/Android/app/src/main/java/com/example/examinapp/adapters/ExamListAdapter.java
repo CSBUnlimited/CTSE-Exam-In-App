@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.examinapp.R;
+import com.example.examinapp.activities.ExamActivity;
 import com.example.examinapp.activities.LecturerExamActivity;
 import com.example.examinapp.consts.ExamInApplication;
 import com.example.examinapp.enums.UserTypeEnum;
@@ -76,15 +77,9 @@ public class ExamListAdapter extends BaseAdapter {
                     _activityContext.startActivity(intent);
                 }
                 else {
-
-                    if (loggedInUserModel.getUserTypeEnum() == UserTypeEnum.Lecturer) {
-                        test = "lecturer ";
-                    }
-                    else {
-                        test = "pumkin ";
-                    }
-
-                    Toast.makeText(clickedView.getContext(), test + examModel.getId(), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(_activityContext, ExamActivity.class);
+                    intent.putExtra(ExamInApplication.EXAM_ID, examModel.getId());
+                    _activityContext.startActivity(intent);
                 }
 
             }
